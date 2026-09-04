@@ -1,0 +1,164 @@
+@{
+    ViewData["Title"] = "Admission Certificate";
+    var petitioner = Model as GuildForm.Models.Petitioner;
+    var selectedGuild = ViewBag.SelectedGuild as GuildForm.Models.GuildOrder;
+}
+
+<div class="container-fluid parchment-container">
+    <div class="certificate-modal" id="certificateModal">
+        <!-- Corner Flourishes -->
+        <div class="corner-flourish corner-flourish-tl">⚜️</div>
+        <div class="corner-flourish corner-flourish-tr">⚜️</div>
+        <div class="corner-flourish corner-flourish-bl">⚜️</div>
+        <div class="corner-flourish corner-flourish-br">⚜️</div>
+
+        <!-- Certificate Header -->
+        <div class="certificate-header">
+            <div class="font-cinzel certificate-title">Admission Certificate</div>
+            <div class="font-medieval certificate-subtitle">Royal Chancery of the Guild Fellowships</div>
+        </div>
+
+        <!-- Registration Seal Banner -->
+        <div class="text-center mb-4">
+            <div style="display: inline-block; background: var(--wax-red); color: var(--gold-accent); 
+                        padding: 0.5rem 2rem; border-radius: 4px; font-family: 'Cinzel Decorative', cursive; 
+                        font-size: 1.2rem; border: 2px solid var(--wax-red-dark); 
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
+                @petitioner?.RegistrationCode
+            </div>
+        </div>
+
+        <!-- Certificate Body -->
+        <div class="certificate-body">
+            <p class="mb-3">
+                <span class="drop-cap">B</span>y the authority vested in the Royal Chancery and the Ancient Guild Fellowships, 
+                we hereby recognize and admit:
+            </p>
+            
+            <div class="text-center my-4">
+                <h3 class="font-cinzel" style="color: var(--ink-heading); font-size: 1.8rem;">
+                    @petitioner?.FullName
+                </h3>
+                <p class="font-fell" style="color: var(--ink-faded); font-style: italic;">
+                    @petitioner?.Lineage
+                </p>
+            </div>
+            
+            <p class="mb-3">
+                of <strong>@petitioner?.TownOrBorough</strong>, sponsored by Master <strong>@petitioner?.SponsoringMaster</strong>, 
+                as a <strong>@petitioner?.StationSought</strong> in the:
+            </p>
+            
+            <div class="text-center my-4 p-3" style="background: rgba(197, 155, 39, 0.1); border: 2px solid var(--gold-accent); border-radius: 4px;">
+                <h3 class="font-cinzel" style="color: var(--ink-heading); font-size: 1.5rem;">
+                    @selectedGuild?.Name
+                </h3>
+                <p class="font-medieval" style="color: var(--ink-faded); font-style: italic; font-size: 1.1rem;">
+                    "@selectedGuild?.Motto"
+                </p>
+                <p class="font-fell" style="color: var(--ink-color); margin-top: 0.5rem;">
+                    Under the patronage of @selectedGuild?.PatronSaint
+                </p>
+            </div>
+            
+            <p class="mb-3">
+                Having demonstrated @petitioner?.WinterPracticeYears years of winter practice and sworn 
+                the solemn oath of fealty, this petitioner is hereby granted all rights, privileges, 
+                and responsibilities of guild membership, subject to the payment of @petitioner?.SovereignTithes 
+                silver pieces in sovereign tithes.
+            </p>
+            
+            <p class="mb-3 font-fell" style="font-style: italic; color: var(--ink-faded);">
+                "@petitioner?.CraftTestimony"
+            </p>
+            
+            <div class="text-center mt-4">
+                <span class="status-stamp status-scrutiny">
+                    @petitioner?.Status
+                </span>
+            </div>
+        </div>
+
+        <!-- Wax Seal -->
+        <div class="certificate-seal">
+            <div style="display: inline-block; width: 120px; height: 120px; 
+                        background: radial-gradient(circle at 35% 35%, #a82020, #731212 70%, #4a0a0a);
+                        border: 4px solid var(--wax-red-dark);
+                        border-radius: 50%;
+                        display: flex; align-items: center; justify-content: center;
+                        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+                        position: relative;">
+                <div style="text-align: center; color: var(--gold-accent);">
+                    <div style="font-family: 'Cinzel Decorative', cursive; font-size: 1.4rem; font-weight: bold;">
+                        @selectedGuild?.IconName
+                    </div>
+                    <div style="font-family: 'MedievalSharp', cursive; font-size: 0.7rem; margin-top: 0.25rem;">
+                        ROYAL
+                    </div>
+                    <div style="font-family: 'MedievalSharp', cursive; font-size: 0.7rem;">
+                        SEAL
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signatures -->
+        <div class="certificate-signatures">
+            <div class="signature-line">
+                <div class="signature-mark font-script">
+                    @petitioner?.FullName
+                </div>
+                <div class="signature-label">
+                    Petitioner's Mark
+                </div>
+            </div>
+            <div class="signature-line">
+                <div class="signature-mark font-script">
+                    @petitioner?.LordChancellorSignature
+                </div>
+                <div class="signature-label">
+                    Lord Chancellor
+                </div>
+            </div>
+        </div>
+
+        <!-- Date -->
+        <div class="text-center mt-4 font-fell" style="color: var(--ink-faded); font-style: italic;">
+            Affixed this @DateTime.Now.ToString("dd") day of @DateTime.Now.ToString("MMMM"), @DateTime.Now.ToString("yyyy") Anno Domini
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center mt-4">
+            <button onclick="window.print()" class="btn mx-2" 
+                    style="background: var(--ink-color); color: var(--parchment-bg); 
+                           border: 2px solid var(--gold-accent); font-family: 'MedievalSharp', cursive; 
+                           padding: 0.5rem 1.5rem; border-radius: 0;">
+                📜 Print Certificate
+            </button>
+            <a asp-action="Petition" class="btn mx-2" 
+               style="background: var(--parchment-border); color: var(--parchment-bg); 
+                      border: 2px solid var(--ink-color); font-family: 'MedievalSharp', cursive; 
+                      padding: 0.5rem 1.5rem; border-radius: 0; text-decoration: none;">
+                ✒️ New Petition
+            </a>
+            <a asp-action="GuildRolls" class="btn mx-2" 
+               style="background: var(--gold-accent); color: var(--ink-heading); 
+                      border: 2px solid var(--gold-dark); font-family: 'MedievalSharp', cursive; 
+                      padding: 0.5rem 1.5rem; border-radius: 0; text-decoration: none;">
+                📋 View Guild Rolls
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-scroll to top when certificate loads
+        window.scrollTo(0, 0);
+        
+        // Play wax seal sound effect
+        if (typeof MedievalSounds !== 'undefined') {
+            MedievalSounds.waxSeal();
+        }
+    </script>
+}

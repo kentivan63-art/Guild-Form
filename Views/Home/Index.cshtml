@@ -3,6 +3,14 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="font-cinzel" style="color: var(--ink-heading); font-size: 2rem;">Welcome to the Royal Chancery</h1>
+    <p class="font-fell" style="color: var(--ink-faded); font-style: italic; font-size: 1.1rem;">
+        Redirecting to the Petition Scroll...
+    </p>
 </div>
+
+<script>
+    setTimeout(function() {
+        window.location.href = '@Url.Action("Petition", "Home")';
+    }, 1000);
+</script>

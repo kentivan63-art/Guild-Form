@@ -1,0 +1,587 @@
+/* Medieval Manuscript & Guild Registry Styles */
+
+/* Color Palette */
+:root {
+    --ink-color: #2b1810;
+    --ink-faded: #634735;
+    --ink-heading: #1e0e07;
+    --parchment-bg: #f5eedb;
+    --parchment-card: rgba(247, 240, 226, 0.94);
+    --parchment-border: #8b5a2b;
+    --parchment-border-dark: #4a2810;
+    --gold-accent: #c59b27;
+    --gold-dark: #8c6813;
+    --wax-red: #8b1818;
+    --wax-red-dark: #5c0f0f;
+}
+
+/* Typography Classes */
+.font-cinzel {
+    font-family: 'Cinzel Decorative', cursive;
+}
+
+.font-medieval {
+    font-family: 'MedievalSharp', cursive;
+}
+
+.font-script {
+    font-family: 'Eagle Lake', cursive;
+}
+
+.font-fell {
+    font-family: 'IM Fell English', serif;
+}
+
+.drop-cap {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 3.5rem;
+    color: var(--wax-red);
+    text-shadow: 1px 1px 0px var(--gold-accent);
+    float: left;
+    line-height: 1;
+    margin-right: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+/* Global Background */
+body {
+    background-image: url('/images/MedievalScroll.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--parchment-bg);
+    color: var(--ink-color);
+    font-family: 'IM Fell English', serif;
+}
+
+/* Tavern Header */
+.tavern-header {
+    background: linear-gradient(135deg, var(--ink-heading) 0%, var(--ink-color) 100%);
+    border-bottom: 4px solid var(--gold-accent);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.tavern-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(197, 155, 39, 0.1) 50%, 
+        transparent 100%);
+    pointer-events: none;
+}
+
+.chancery-seal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 1rem;
+}
+
+.seal-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.25rem;
+    filter: drop-shadow(0 0 5px var(--gold-accent));
+}
+
+.tavern-title {
+    color: var(--gold-accent);
+    font-size: 1.8rem;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 2px;
+}
+
+.tavern-subtitle {
+    color: var(--parchment-bg);
+    font-size: 1rem;
+    margin: 0;
+    opacity: 0.9;
+    font-style: italic;
+}
+
+/* Medieval Navigation */
+.medieval-nav {
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.medieval-nav .nav-link {
+    color: var(--parchment-bg);
+    border: 2px solid var(--gold-dark);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem 1.5rem;
+    border-radius: 0;
+    font-family: 'MedievalSharp', cursive;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.medieval-nav .nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(197, 155, 39, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.medieval-nav .nav-link:hover::before {
+    left: 100%;
+}
+
+.medieval-nav .nav-link:hover {
+    background: rgba(197, 155, 39, 0.2);
+    border-color: var(--gold-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.medieval-nav .nav-link.active {
+    background: var(--gold-accent);
+    color: var(--ink-heading);
+    border-color: var(--gold-dark);
+    font-weight: bold;
+}
+
+.nav-icon {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+/* Parchment Container */
+.parchment-container {
+    padding: 2rem;
+    min-height: calc(100vh - 120px);
+}
+
+/* Parchment Scroll */
+.parchment-scroll {
+    background: var(--parchment-card);
+    border: 4px double var(--parchment-border);
+    border-radius: 8px;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        inset 0 0 45px rgba(120, 80, 40, 0.22);
+    margin: 1rem auto;
+    max-width: 900px;
+}
+
+.parchment-scroll::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    border: 1px dashed rgba(139, 90, 43, 0.45);
+    pointer-events: none;
+    border-radius: 4px;
+}
+
+/* Corner Flourishes */
+.corner-flourish {
+    position: absolute;
+    font-size: 2rem;
+    color: var(--parchment-border);
+    font-family: 'MedievalSharp', cursive;
+    opacity: 0.7;
+}
+
+.corner-flourish-tl {
+    top: -15px;
+    left: -15px;
+}
+
+.corner-flourish-tr {
+    top: -15px;
+    right: -15px;
+}
+
+.corner-flourish-bl {
+    bottom: -15px;
+    left: -15px;
+}
+
+.corner-flourish-br {
+    bottom: -15px;
+    right: -15px;
+}
+
+/* Form Sections */
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(139, 90, 43, 0.3);
+}
+
+.form-section:last-child {
+    border-bottom: none;
+}
+
+.section-title {
+    font-family: 'Cinzel Decorative', cursive;
+    color: var(--ink-heading);
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--parchment-border);
+    padding-bottom: 0.5rem;
+    position: relative;
+}
+
+.section-title::after {
+    content: '❧';
+    position: absolute;
+    right: 0;
+    color: var(--gold-accent);
+    font-size: 1.2rem;
+}
+
+/* Quill Input Controls */
+.quill-input {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--parchment-border);
+    border-radius: 0;
+    padding: 0.5rem 0;
+    font-family: 'IM Fell English', serif;
+    font-size: 1.1rem;
+    color: var(--ink-color);
+    transition: border-color 0.3s ease;
+    width: 100%;
+}
+
+.quill-input:focus {
+    outline: none;
+    border-bottom-color: var(--ink-color);
+    background: rgba(245, 238, 219, 0.3);
+    box-shadow: none;
+}
+
+.quill-input::placeholder {
+    color: var(--ink-faded);
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* Quill Textarea with Lined Paper */
+.quill-textarea {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--parchment-border);
+    border-radius: 0;
+    padding: 0.5rem 0;
+    font-family: 'IM Fell English', serif;
+    font-size: 1.1rem;
+    color: var(--ink-color);
+    line-height: 32px;
+    background-image: linear-gradient(transparent, transparent 31px, rgba(140, 100, 60, 0.15) 32px);
+    background-size: 100% 32px;
+    resize: vertical;
+    min-height: 128px;
+    width: 100%;
+}
+
+.quill-textarea:focus {
+    outline: none;
+    border-bottom-color: var(--ink-color);
+    background-color: rgba(245, 238, 219, 0.3);
+}
+
+/* Guild Selection Grid */
+.guild-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.guild-card {
+    background: rgba(245, 238, 219, 0.5);
+    border: 2px solid var(--parchment-border);
+    border-radius: 4px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.guild-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--parchment-border);
+    transition: background 0.3s ease;
+}
+
+.guild-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border-color: var(--gold-accent);
+}
+
+.guild-card:hover::before {
+    background: var(--gold-accent);
+}
+
+.guild-card.selected {
+    border-color: var(--gold-accent);
+    background: rgba(197, 155, 39, 0.1);
+}
+
+.guild-card.selected::before {
+    background: var(--gold-accent);
+}
+
+.guild-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.guild-name {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 1.1rem;
+    color: var(--ink-heading);
+    margin-bottom: 0.25rem;
+}
+
+.guild-subtitle {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.9rem;
+    color: var(--ink-faded);
+    font-style: italic;
+    margin-bottom: 0.5rem;
+}
+
+.guild-motto {
+    font-family: 'IM Fell English', serif;
+    font-size: 0.85rem;
+    color: var(--ink-color);
+    font-style: italic;
+}
+
+/* Wax Seal Button */
+.wax-seal-btn {
+    background: radial-gradient(circle at 35% 35%, #a82020, #731212 70%, #4a0a0a);
+    border: 3px solid var(--wax-red-dark);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    color: var(--gold-accent);
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.2;
+    padding: 0.5rem;
+}
+
+.wax-seal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.5),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.wax-seal-btn:active {
+    transform: translateY(1px);
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.5),
+        0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Oath Checkbox */
+.oath-container {
+    background: rgba(245, 238, 219, 0.3);
+    border: 1px solid var(--parchment-border);
+    border-radius: 4px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.oath-text {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--ink-color);
+    line-height: 1.6;
+}
+
+.oath-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--wax-red);
+    cursor: pointer;
+}
+
+/* Status Stamps */
+.status-stamp {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.status-charter {
+    background: #2d5a27;
+    color: #f5eedb;
+    border: 2px solid #1a3d17;
+}
+
+.status-sealed {
+    background: #8b6914;
+    color: #f5eedb;
+    border: 2px solid #5c4a0f;
+}
+
+.status-scrutiny {
+    background: var(--wax-red);
+    color: #f5eedb;
+    border: 2px solid var(--wax-red-dark);
+}
+
+/* Certificate Modal */
+.certificate-modal {
+    background: var(--parchment-card);
+    border: 8px double var(--gold-accent);
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 700px;
+    margin: 2rem auto;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.certificate-header {
+    text-align: center;
+    border-bottom: 3px solid var(--gold-accent);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.certificate-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 2rem;
+    color: var(--ink-heading);
+    margin: 0;
+}
+
+.certificate-subtitle {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 1.2rem;
+    color: var(--ink-faded);
+    margin: 0.5rem 0 0 0;
+    font-style: italic;
+}
+
+.certificate-body {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--ink-color);
+    margin-bottom: 1.5rem;
+}
+
+.certificate-seal {
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+.certificate-signatures {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--parchment-border);
+}
+
+.signature-line {
+    text-align: center;
+    flex: 1;
+}
+
+.signature-mark {
+    font-family: 'Eagle Lake', cursive;
+    font-size: 1.3rem;
+    color: var(--ink-color);
+    margin-bottom: 0.5rem;
+}
+
+.signature-label {
+    font-family: 'IM Fell English', serif;
+    font-size: 0.9rem;
+    color: var(--ink-faded);
+    font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .tavern-header {
+        text-align: center;
+    }
+    
+    .chancery-seal {
+        align-items: center;
+        padding-left: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .medieval-nav {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .medieval-nav .nav-link {
+        padding: 0.4rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .parchment-scroll {
+        padding: 1rem;
+    }
+    
+    .guild-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .certificate-signatures {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+/* Medieval Footer */
+.medieval-footer {
+    background: linear-gradient(135deg, var(--ink-heading) 0%, var(--ink-color) 100%);
+    border-top: 3px solid var(--gold-accent);
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3);
+}

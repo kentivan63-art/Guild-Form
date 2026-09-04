@@ -1,0 +1,196 @@
+@{
+    ViewData["Title"] = "Guild Rolls";
+    var guilds = ViewBag.Guilds as List<GuildForm.Models.GuildOrder>;
+    var petitions = Model as List<GuildForm.Models.Petitioner>;
+}
+
+<div class="parchment-scroll">
+    <!-- Corner Flourishes -->
+    <div class="corner-flourish corner-flourish-tl">❧</div>
+    <div class="corner-flourish corner-flourish-tr">❧</div>
+    <div class="corner-flourish corner-flourish-bl">❧</div>
+    <div class="corner-flourish corner-flourish-br">❧</div>
+
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <h1 class="font-cinzel" style="color: var(--ink-heading); font-size: 2rem; margin-bottom: 0.5rem;">
+            Archival Guild Rolls
+        </h1>
+        <p class="font-medieval" style="color: var(--ink-faded); font-style: italic; font-size: 1.1rem;">
+            Registry of All Registered Craftsmen & Petitioners
+        </p>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="form-section">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="font-fell" style="color: var(--ink-heading);">Search Registry</label>
+                <input type="text" class="quill-input" id="searchInput" 
+                       placeholder="Search by name, town, or seal code..." />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="font-fell" style="color: var(--ink-heading);">Filter by Guild</label>
+                <select class="quill-input" id="guildFilter">
+                    <option value="">All Fellowships</option>
+                    @if (guilds != null)
+                    {
+                        @foreach (var guild in guilds)
+                        {
+                            <option value="@((int)guild.Id)">@guild.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registry Table -->
+    <div class="table-responsive">
+        <table class="table table-hover" id="registryTable" style="background: rgba(245, 238, 219, 0.3);">
+            <thead>
+                <tr style="border-bottom: 2px solid var(--parchment-border);">
+                    <th class="font-cinzel" style="color: var(--ink-heading);">Seal Code</th>
+                    <th class="font-cinzel" style="color: var(--ink-heading);">Name</th>
+                    <th class="font-cinzel" style="color: var(--ink-heading);">Guild</th>
+                    <th class="font-cinzel" style="color: var(--ink-heading);">Station</th>
+                    <th class="font-cinzel" style="color: var(--ink-heading);">Town</th>
+                    <th class="font-cinzel" style="color: var(--ink-heading);">Status</th>
+                    <th class="font-cinzel" style="color: var(--ink-heading);">Date</th>
+                </tr>
+            </thead>
+            <tbody id="registryBody">
+                <tr>
+                    <td colspan="7" class="text-center font-fell" style="padding: 2rem; color: var(--ink-faded);">
+                        <em>Loading archives from local scrolls...</em>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="text-center py-5" style="display: none;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">📜</div>
+        <h3 class="font-cinzel" style="color: var(--ink-heading);">No Records Found</h3>
+        <p class="font-fell" style="color: var(--ink-faded); font-style: italic;">
+            The archives contain no matching records. Try different search terms.
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Load petitions from localStorage
+        function loadPetitions() {
+            const stored = localStorage.getItem('guild_petitions');
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            return [];
+        }
+
+        // Render petitions to table
+        function renderPetitions(petitions) {
+            const tbody = document.getElementById('registryBody');
+            const emptyState = document.getElementById('emptyState');
+            const guilds = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(guilds, new System.Text.Json.JsonSerializerOptions { 
+                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase 
+            }));
+
+            if (petitions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center font-fell" style="padding: 2rem; color: var(--ink-faded);">
+                            <em>No petitions recorded in the archives. The scrolls lie empty.</em>
+                        </td>
+                    </tr>
+                `;
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            let html = '';
+            petitions.forEach(petitioner => {
+                const guild = guilds.find(g => g.id === petitioner.selectedGuildId);
+                const guildName = guild ? guild.name : petitioner.selectedGuildId;
+                const statusClass = getStatusClass(petitioner.status);
+                const date = new Date(petitioner.submissionDate).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+
+                html += `
+                    <tr class="registry-row" 
+                        data-name="${petitioner.fullName.toLowerCase()}" 
+                        data-town="${petitioner.townOrBorough.toLowerCase()}" 
+                        data-code="${petitioner.registrationCode.toLowerCase()}"
+                        data-guild="${petitioner.selectedGuildId}">
+                        <td class="font-fell">${petitioner.registrationCode}</td>
+                        <td class="font-fell">${petitioner.fullName}</td>
+                        <td class="font-medieval">${guildName}</td>
+                        <td class="font-fell">${petitioner.stationSought}</td>
+                        <td class="font-fell">${petitioner.townOrBorough}</td>
+                        <td>
+                            <span class="status-stamp ${statusClass}">
+                                ${petitioner.status}
+                            </span>
+                        </td>
+                        <td class="font-fell">${date}</td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            emptyState.style.display = 'none';
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Charter Bestowed': return 'status-charter';
+                case 'Sealed & Enrolled': return 'status-sealed';
+                case 'Under Guild Scrutiny': return 'status-scrutiny';
+                default: return '';
+            }
+        }
+
+        // Filter functionality
+        function filterPetitions() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const guildFilter = document.getElementById('guildFilter').value;
+            const petitions = loadPetitions();
+            
+            const filtered = petitions.filter(petitioner => {
+                const matchesSearch = !searchTerm || 
+                    petitioner.fullName.toLowerCase().includes(searchTerm) ||
+                    petitioner.townOrBorough.toLowerCase().includes(searchTerm) ||
+                    petitioner.registrationCode.toLowerCase().includes(searchTerm);
+                
+                const matchesGuild = !guildFilter || petitioner.selectedGuildId === parseInt(guildFilter);
+                
+                return matchesSearch && matchesGuild;
+            });
+
+            renderPetitions(filtered);
+            
+            // Show/hide empty state
+            const emptyState = document.getElementById('emptyState');
+            if (filtered.length === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterPetitions);
+        document.getElementById('guildFilter').addEventListener('change', filterPetitions);
+
+        // Initial load
+        document.addEventListener('DOMContentLoaded', function() {
+            const petitions = loadPetitions();
+            renderPetitions(petitions);
+        });
+    </script>
+}

@@ -1,0 +1,254 @@
+@{
+    ViewData["Title"] = "Petition Scroll";
+    var guilds = ViewBag.Guilds as List<GuildForm.Models.GuildOrder>;
+}
+
+<div class="parchment-scroll">
+    <!-- Corner Flourishes -->
+    <div class="corner-flourish corner-flourish-tl">❧</div>
+    <div class="corner-flourish corner-flourish-tr">❧</div>
+    <div class="corner-flourish corner-flourish-bl">❧</div>
+    <div class="corner-flourish corner-flourish-br">❧</div>
+
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <h1 class="font-cinzel" style="color: var(--ink-heading); font-size: 2rem; margin-bottom: 0.5rem;">
+            Royal Chancery Petition
+        </h1>
+        <p class="font-medieval" style="color: var(--ink-faded); font-style: italic; font-size: 1.1rem;">
+            For Admission to the Ancient Guild Fellowships
+        </p>
+    </div>
+
+    <form asp-action="Petition" method="post" id="petitionForm">
+        <!-- Section I: Guild Order Selection -->
+        <div class="form-section">
+            <h2 class="section-title">I. Guild Order Selection</h2>
+            <p class="font-fell" style="margin-bottom: 1rem; color: var(--ink-faded);">
+                Select the ancient craft fellowship thou dost seek to join:
+            </p>
+            
+            <div class="guild-grid" id="guildGrid">
+                @if (guilds != null)
+                {
+                    @foreach (var guild in guilds)
+                    {
+                        <div class="guild-card" data-guild-id="@((int)guild.Id)" data-guild-name="@guild.Name" 
+                             data-guild-icon="@guild.IconName" onclick="selectGuild(@((int)guild.Id))">
+                            <div class="guild-icon">@guild.IconName</div>
+                            <div class="guild-name">@guild.Name</div>
+                            <div class="guild-subtitle">@guild.SubTitle</div>
+                            <div class="guild-motto">"@guild.Motto"</div>
+                        </div>
+                    }
+                }
+            </div>
+            
+            <input type="hidden" id="selectedGuildId" name="SelectedGuildId" required />
+            
+            <div id="guildDetails" class="mt-3" style="display: none;">
+                <div class="p-3" style="background: rgba(245, 238, 219, 0.3); border-left: 3px solid var(--gold-accent);">
+                    <h4 class="font-cinzel" id="selectedGuildName" style="color: var(--ink-heading);"></h4>
+                    <p class="font-fell" id="selectedGuildDescription" style="margin-bottom: 0.5rem;"></p>
+                    <p class="font-medieval" style="font-style: italic; color: var(--ink-faded);">
+                        <strong>Patron Saint:</strong> <span id="selectedGuildPatron"></span>
+                    </p>
+                    <p class="font-fell" style="font-style: italic; color: var(--ink-faded);">
+                        <strong>Recommended Dues:</strong> <span id="selectedGuildDues"></span> silver pieces
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section II: Petitioner Lineage -->
+        <div class="form-section">
+            <h2 class="section-title">II. Petitioner Lineage & Sponsoring Master</h2>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="font-fell" style="color: var(--ink-heading);">Full Name</label>
+                    <input type="text" class="quill-input" name="FullName" id="FullName"
+                           placeholder="e.g., Gareth, Son of Eamon the Weaver" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="font-fell" style="color: var(--ink-heading);">Lineage</label>
+                    <input type="text" class="quill-input" name="Lineage" id="Lineage"
+                           placeholder="e.g., Third generation of the Southwark Weavers" />
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="font-fell" style="color: var(--ink-heading);">Sponsoring Master</label>
+                    <input type="text" class="quill-input" name="SponsoringMaster" id="SponsoringMaster"
+                           placeholder="e.g., Master Thaddeus of the Iron Guild" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="font-fell" style="color: var(--ink-heading);">Town or Borough</label>
+                    <input type="text" class="quill-input" name="TownOrBorough" id="TownOrBorough"
+                           placeholder="e.g., Borough of Southwark" required />
+                </div>
+            </div>
+        </div>
+
+        <!-- Section III: Station Sought & Sovereign Tithes -->
+        <div class="form-section">
+            <h2 class="section-title">III. Station Sought & Sovereign Tithes</h2>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="font-fell" style="color: var(--ink-heading);">Station Sought</label>
+                    <select class="quill-input" name="StationSought" id="StationSought" required>
+                        <option value="">Select thy desired station...</option>
+                        <option value="Apprentice">Apprentice</option>
+                        <option value="Journeyman">Journeyman</option>
+                        <option value="Master Craftsman">Master Craftsman</option>
+                        <option value="Guild Elder">Guild Elder</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="font-fell" style="color: var(--ink-heading);">Sovereign Tithes (silver pieces)</label>
+                    <input type="number" class="quill-input" name="SovereignTithes" id="SovereignTithes"
+                           placeholder="Amount to be paid to the Crown" min="0" step="0.5" required />
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="font-fell" style="color: var(--ink-heading);">
+                    Years of Winter Practice: <span id="yearsDisplay">3</span>
+                </label>
+                <input type="range" class="form-range" name="WinterPracticeYears" id="WinterPracticeYears"
+                       min="1" max="20" value="3" 
+                       oninput="document.getElementById('yearsDisplay').textContent = this.value" />
+                <div class="font-fell" style="font-size: 0.9rem; color: var(--ink-faded); font-style: italic;">
+                    Years served in the craft under winter's hardship
+                </div>
+            </div>
+        </div>
+
+        <!-- Section IV: Craft Testimony -->
+        <div class="form-section">
+            <h2 class="section-title">IV. Ruled Quill Testimony of Craft</h2>
+            <p class="font-fell" style="margin-bottom: 1rem; color: var(--ink-faded);">
+                Describe thy skills, experience, and notable works in the craft:
+            </p>
+            
+            <textarea class="quill-textarea" name="CraftTestimony" id="CraftTestimony"
+                      placeholder="Write thy testimony here, describing thy mastery of the craft and notable achievements..." 
+                      rows="6" required></textarea>
+            
+            <div class="mt-3">
+                <label class="font-fell" style="color: var(--ink-heading);">Custom Oath (Optional)</label>
+                <input type="text" class="quill-input" name="CustomOath" id="CustomOath"
+                       placeholder="Add thy own vows to the standard oath..." />
+            </div>
+        </div>
+
+        <!-- Section V: Solemn Oath -->
+        <div class="form-section">
+            <h2 class="section-title">V. Solemn Oath of Fealty</h2>
+            
+            <div class="oath-container">
+                <div class="form-check">
+                    <input class="form-check-input oath-checkbox" type="checkbox" name="OathAccepted" id="oathCheck" required />
+                    <label class="form-check-label oath-text" for="oathCheck">
+                        <span class="drop-cap">I</span> swear to uphold the sacred traditions of the guild, to honor my fellow craftsmen, 
+                        to serve the Crown with loyalty, and to never use my skills for dark purposes. 
+                        I pledge to pay my dues, to mentor apprentices, and to maintain the honor of the fellowship. 
+                        Should I break this oath, I accept banishment and the loss of all guild privileges.
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="text-center mt-4">
+            <div class="mb-3">
+                <p class="font-fell" style="color: var(--ink-faded); font-style: italic;">
+                    Press the wax seal to affix thy signature and submit thy petition
+                </p>
+            </div>
+            
+            <button type="submit" class="wax-seal-btn mx-auto d-block">
+                Affix<br/>Seal
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        let selectedGuild = null;
+        const guildsData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(guilds, new System.Text.Json.JsonSerializerOptions { 
+            PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase 
+        }));
+
+        function selectGuild(guildId) {
+            // Remove previous selection
+            document.querySelectorAll('.guild-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selection to clicked card
+            const selectedCard = document.querySelector(`[data-guild-id="${guildId}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+            
+            // Update hidden input
+            document.getElementById('selectedGuildId').value = guildId;
+            selectedGuild = guildId;
+            
+            // Show guild details
+            const guild = guildsData.find(g => g.id === guildId);
+            
+            if (guild) {
+                document.getElementById('guildDetails').style.display = 'block';
+                document.getElementById('selectedGuildName').textContent = guild.name;
+                document.getElementById('selectedGuildDescription').textContent = guild.description;
+                document.getElementById('selectedGuildPatron').textContent = guild.patronSaint;
+                document.getElementById('selectedGuildDues').textContent = guild.recommendedDues;
+                
+                // Update default oath
+                document.querySelector('.oath-text').innerHTML = 
+                    '<span class="drop-cap">I</span> ' + guild.defaultOath;
+            }
+        }
+
+        // Form validation and submission
+        document.getElementById('petitionForm').addEventListener('submit', function(e) {
+            if (!selectedGuild) {
+                e.preventDefault();
+                alert('Please select a guild order before affixing thy seal.');
+                return;
+            }
+            
+            if (!document.getElementById('oathCheck').checked) {
+                e.preventDefault();
+                alert('Thou must accept the solemn oath before proceeding.');
+                return;
+            }
+            
+            // Save to localStorage before submission
+            const formData = new FormData(this);
+            const petitioner = {
+                fullName: formData.get('FullName'),
+                lineage: formData.get('Lineage'),
+                sponsoringMaster: formData.get('SponsoringMaster'),
+                townOrBorough: formData.get('TownOrBorough'),
+                selectedGuildId: parseInt(formData.get('SelectedGuildId')),
+                stationSought: formData.get('StationSought'),
+                sovereignTithes: parseFloat(formData.get('SovereignTithes')),
+                winterPracticeYears: parseInt(formData.get('WinterPracticeYears')),
+                craftTestimony: formData.get('CraftTestimony'),
+                customOath: formData.get('CustomOath') || '',
+                oathAccepted: formData.get('OathAccepted') === 'true',
+                submissionDate: new Date().toISOString(),
+                registrationCode: generateRegistrationCode(guildsData.find(g => g.id === selectedGuild).name),
+                status: 'Under Guild Scrutiny'
+            };
+            
+            savePetition(petitioner);
+        });
+    </script>
+}
